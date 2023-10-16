@@ -96,7 +96,6 @@ function reducer(state, {type, payload}) {
   }
 }
 
-
 function evaluate({ currentOperand, previousOperand, operation }) {
   const prev = parseFloat(previousOperand);
   const current = parseFloat(currentOperand);
@@ -122,6 +121,19 @@ function evaluate({ currentOperand, previousOperand, operation }) {
   return computaion.toString();
 }
 
+const INTEGER_FORMATTER = new Intl.NumberFormat("en-us", {
+  maximumFractionDigits: 0,
+});
+
+function formatOpearnd(operand) {
+  if (operand == null)  return;
+
+  const [integer, decimal] = operand.split('.');
+  if (decimal == null) {
+    return INTEGER_FORMATTER.format(integer);
+  }
+  return `${INTEGER_FORMATTER.format(integer)}.${decimal}`
+}
 
 function App() {
   const [{ currentOperand, previousOperand, operation }, dispatch] = useReducer(reducer, {});
@@ -131,9 +143,9 @@ function App() {
     <div className="calculator-grid">
       <div className="output">
         <div className="previous-operand">
-          {previousOperand} {operation}
+          {formatOpearnd(previousOperand)} {operation}
         </div>
-        <div className="current-operand">{currentOperand}</div>
+        <div className="current-operand">{formatOpearnd(currentOperand)}</div>
       </div>
 
       <button
